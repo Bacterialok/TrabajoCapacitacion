@@ -41,5 +41,6 @@ public class MainFinal1 {
 
         //CORRECTO
         //product.setName("Otro nombre");
+        System.out.println(product);
     }
 }

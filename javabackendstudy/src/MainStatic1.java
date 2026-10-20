@@ -32,6 +32,8 @@ public class MainStatic1 {
         User1 u2 = new User1("Luis");
         User1 u3 = new User1("Pedro");
 
+        System.out.println(u1 + " " + u2 + " " + u3 + " ");
+
         System.out.println("Uso de variables estaticas: ");
         System.out.println(User1.totalUser);
 
