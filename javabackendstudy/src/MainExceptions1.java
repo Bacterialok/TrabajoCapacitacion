@@ -62,6 +62,16 @@ public class MainExceptions1 {
         leerArchivo();
     }
 
+    public static void procesar(int opcion) {
+        if (opcion == 1) {
+            throw new ArithmeticException("Error matematico");            
+        } else if (opcion == 2) {
+            throw new IllegalArgumentException("Error de argumentos");
+        } else if (opcion == 3) {
+            throw new RuntimeException("Error de runtime");
+        }
+    }
+
     public static void main(String[] args) {
         try {
             leerArchivo();
@@ -100,6 +110,17 @@ public class MainExceptions1 {
             validarEdadPersonalizada(-1);
         } catch (InvalidAgeException e) {
             System.out.println("Error: " + e.getMessage());
+        }
+
+        // Ejemplo con múltiples catch y jerarquía de excepciones.
+        try {
+            procesar(2);
+        } catch (ArithmeticException e) {
+            System.out.println("Error: " + e);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error: " + e);
+        } catch (RuntimeException e) {
+            System.out.println("Error: " + e);
         }
     }
 }
