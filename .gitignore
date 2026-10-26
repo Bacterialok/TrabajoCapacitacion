@@ -1,0 +1,30 @@
+# Maven
+target/
+
+# Archivos compilados
+*.class
+*.jar
+*.war
+
+# VS Code
+.vscode/
+.history/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Eclipse
+.settings/
+.classpath
+.project
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Variables de entorno
+.env
