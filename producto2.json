@@ -1,0 +1,15 @@
+{
+    "id": 20,
+    "name": "Mouse",
+    "price": 850.99,
+    "active": true,
+    "tags": [
+        "GAMING",
+        "WIRELESS",
+        "ACCESSORIES"
+    ],
+    "manufacturer": {
+        "name": "Logitech",
+        "country": "Switzerland"
+    }
+}
