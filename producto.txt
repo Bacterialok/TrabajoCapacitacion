@@ -1,0 +1,3 @@
+Laptop,15000,ACTIVE
+Mouse,500,ACTIVE
+Monitor,4500,INACTIVE
