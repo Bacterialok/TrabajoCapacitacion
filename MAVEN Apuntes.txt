@@ -1,0 +1,242 @@
+POM significa: Project Object Model
+
+groupId
+-> organización o grupo
+
+artifactId
+-> nombre del proyecto
+
+version
+-> versión del proyecto
+
+Los comandos que vas a usar mucho son:
+compile -> compila tu código.
+test    -> compila y ejecuta pruebas.
+package -> además genera el artefacto final, por ejemplo: .jar
+verify  -> ejecuta verificaciones adicionales.
+install -> coloca tu artefacto en tu repositorio Maven local para que otros proyectos de tu computadora puedan utilizarlo.
+
+Maven ejecuta todas las fases anteriores necesarias:
+validate
+↓
+compile
+↓
+test
+↓
+package
+↓
+verify
+↓
+install
+
+mvn clean compile
+Aquí clean elimina resultados de compilaciones anteriores, normalmente la carpeta: target/
+
+dependencies vs plugins
+
+# Una dependencia es una librería que tu código necesita para funcionar o compilar. Por ejemplo Jackson:
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>...</version>
+</dependency>
+
+Tu código usa clases de esa librería, como: ObjectMapper mapper = new ObjectMapper();
+
+# Un plugin, en cambio, sirve para que Maven haga una tarea durante el build.
+Por ejemplo, el compiler plugin puede controlar con qué versión de Java compilas:
+
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-compiler-plugin</artifactId>
+    <version>3.13.0</version>
+    <configuration>
+        <release>17</release>
+    </configuration>
+</plugin>
+
+Dependency
+-> la usa tu código
+-> algo que usa tu aplicación
+
+Plugin
+-> lo usa Maven durante el build
+-> algo que usa Maven para construir/procesar tu aplicación
+
+Los scopes de una dependencia.
+<scope>test</scope> Eso significa que solo se necesita para pruebas.
+
+Un caso típico sería JUnit:
+<dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter</artifactId>
+    <version>...</version>
+    <scope>test</scope>
+</dependency>
+
+Los scopes que más nos interesa que conozcas por ahora son:
+compile   -> disponible normalmente; es el default
+test      -> solo para pruebas
+provided  -> necesario para compilar, pero el entorno lo proporciona al ejecutar
+runtime   -> no se necesita para compilar, pero sí al ejecutar
+
+# Properties
+En vez de repetir valores, puedes definirlos una vez:
+<properties>
+    <maven.compiler.release>17</maven.compiler.release>
+    <jackson.version>2.18.2</jackson.version>
+</properties>
+
+y luego reutilizarlos:
+
+<dependency>
+    <groupId>com.fasterxml.jackson.core</groupId>
+    <artifactId>jackson-databind</artifactId>
+    <version>${jackson.version}</version>
+</dependency>
+
+Eso ayuda a centralizar versiones y configuraciones.
+
+# Comando util:
+mvn dependency:tree
+
+Sirve para ver todas las dependencias de tu proyecto, incluidas las dependencias transitivas.
+
+Tu proyecto
+  ↓
+jackson-databind
+  ├─ jackson-core
+  └─ jackson-annotations
+
+  
+Cuando Maven descarga dependencias, normalmente las guarda en tu computadora en un repositorio local parecido a: C:\Users\TU_USUARIO\.m2\repository
+
+.m2
+└── repository
+    └── com
+        └── fasterxml
+            └── jackson
+                └── core
+                    └── jackson-databind
+                        └── 2.18.2
+
+Eso sirve para que Maven no tenga que descargar la misma dependencia cada vez.
+
+mvn install -> Maven no solo compila y empaqueta tu proyecto. También instala tu propio artefacto en ese repositorio local.
+
+groupId    = com.estudio
+artifactId = json-demo
+version    = 1.0-SNAPSHOT
+
+Maven puede guardar algo parecido a: .m2/repository/com/estudio/json-demo/1.0-SNAPSHOT/ y dentro estará tu .jar y metadata.
+
+Eso permite que otro proyecto Maven de tu computadora pueda usar json-demo como dependencia.
+
+<dependency>
+    <groupId>com.estudio</groupId>
+    <artifactId>json-demo</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</dependency>
+
+y Maven buscaría primero ese artefacto en tu repositorio local.
+
+La diferencia importante es:
+mvn package
+-> crea el .jar en target/
+
+mvn install
+-> genera el .jar
+-> y además lo guarda en tu repositorio local .m2
+
+mvn deploy 
+Va un paso más allá: publica el artefacto en un repositorio remoto compartido por otros desarrolladores o servidores.
+
+package
+↓
+target/app.jar
+
+install
+↓
+repositorio local .m2
+
+deploy
+↓
+repositorio remoto de la empresa
+
+# SNAPSHOT vs versión release
+
+<version>1.0-SNAPSHOT</version> -> SNAPSHOT significa que esa versión todavía está en desarrollo y puede cambiar.
+<version>1.0.0</version>        -> normalmente representa una versión estable/publicada.
+
+1.0-SNAPSHOT
+-> desarrollo
+-> puede cambiar
+
+1.0.0
+-> release
+-> versión estable
+
+# Maven Profiles
+Un profile sirve para cambiar parte de la configuración del build según el entorno o la situación.
+
+dev
+test
+prod
+
+La idea es que el mismo proyecto pueda comportarse distinto sin tener tres pom.xml diferentes.
+
+Por ejemplo, en el pom.xml podrías tener:
+
+<profiles>
+
+    <profile>
+        <id>dev</id>
+
+        <properties>
+            <environment.name>development</environment.name>
+        </properties>
+    </profile>
+
+    <profile>
+        <id>prod</id>
+
+        <properties>
+            <environment.name>production</environment.name>
+        </properties>
+    </profile>
+
+</profiles>
+
+Para activar uno desde Maven puedes hacer:
+
+mvn package -Pdev
+mvn package -Pprod
+
+-P significa: activa este profile.
+
+Esto puede servir para cambiar cosas como:
+plugins
+properties
+dependencies
+configuración del build
+
+mvn package -Pproduction
+mvn          -> ejecuta Maven
+package      -> ejecuta el lifecycle hasta package
+-Pproduction -> activa el profile llamado production
+
+Pero aquí hay algo importante pensando en Spring Boot: Maven profiles y Spring profiles no son exactamente lo mismo.
+
+Spring Profiles
+    application-dev.yml
+    application-prod.yml
+
+Eso controla principalmente la configuración de la aplicación cuando está ejecutándose.
+
+Mientras que Maven profiles controlan principalmente el proceso de build.
+
+Maven Profile
+-> cómo construyo el proyecto
+
+Spring Profile
+-> cómo se comporta/configura la aplicación

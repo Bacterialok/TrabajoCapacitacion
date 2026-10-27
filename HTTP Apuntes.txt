@@ -1,0 +1,38 @@
+HTTP es el protocolo que usan cliente y servidor para comunicarse.
+
+Un flujo básico es:
+
+Cliente
+  ↓ request
+Servidor
+  ↓ response
+Cliente
+
+Una REQUEST HTTP normalmente tiene:
+
+método
+URL
+headers
+body (a veces)
+
+Una RESPONSE normalmente tiene:
+
+status code
+headers
+body
+
+Los métodos principales que vamos a estudiar son:
+
+GET     -> consultar
+POST    -> crear
+PUT     -> reemplazar/actualizar completamente
+PATCH   -> actualizar parcialmente
+DELETE  -> eliminar
+OPTIONS -> consultar capacidades / CORS preflight
+
+GET:
+Para consultar todos los productos: GET /products
+Para consultar uno específico: GET /products/10 Conceptualmente: /products/{id}
+
+Query Parameter:
+GET /products?active=true
